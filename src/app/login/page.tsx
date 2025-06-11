@@ -5,18 +5,21 @@ import { useRouter } from 'next/navigation';
 import { login } from '@/lib/api';
 import axios from 'axios';
 import { JSX } from 'react';
+import { useAuth } from '@/context/authContext';
 
 export default function LoginPage(): JSX.Element {
   const [email, setemail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const { login: loginUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const data = await login(email, password);
       localStorage.setItem('token', data.token);
+      loginUser(data.token);
       router.push('/dashboard');
     } catch (err) {
         if (axios.isAxiosError(err)) {
