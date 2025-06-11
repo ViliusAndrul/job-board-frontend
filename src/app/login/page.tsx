@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login } from '@/lib/api';
 import axios from 'axios';
+import { JSX } from 'react';
 
 export default function LoginPage(): JSX.Element {
   const [email, setemail] = useState('');
