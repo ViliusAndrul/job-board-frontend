@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login } from '@/lib/api';
 import axios from 'axios';
@@ -13,6 +13,13 @@ export default function LoginPage(): JSX.Element {
   const [error, setError] = useState('');
   const router = useRouter();
   const { login: loginUser } = useAuth();
+  const { user } = useAuth();
+
+  useEffect(() => {
+        if (user) {
+          router.push('/dashboard');
+        }
+      }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
