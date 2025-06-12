@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 
 type Job = {
   id: number;
@@ -9,23 +10,44 @@ type Job = {
   location: string;
 };
 
-type Props = {
+export default function JobCard({
+  job,
+  onApply,
+}: {
   job: Job;
   onApply: (jobId: number) => void;
-};
+}) {
+  const [applied, setApplied] = useState(false);
+  const [error, setError] = useState('');
 
-export default function JobCard({ job, onApply }: Props) {
+  const handleApply = async () => {
+    try {
+      await onApply(job.id);
+      setApplied(true);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.error || 'Failed to apply');
+      } else {
+        setError('Unexpected error');
+      }
+    }
+  };
+
   return (
-    <li className="border p-4 rounded shadow">
-      <h2 className="text-xl font-semibold">{job.title}</h2>
-      <p className="text-sm text-gray-600">{job.location}</p>
-      <p>{job.description}</p>
-      <button
-        className="mt-2 px-4 py-2 bg-blue-600 text-white rounded"
-        onClick={() => onApply(job.id)}
-      >
-        Apply
-      </button>
-    </li>
+    <div className="border rounded p-4 shadow">
+      <h3 className="text-lg font-semibold">{job.title}</h3>
+      <p className="text-sm text-gray-600">{job.description}</p>
+      {applied ? (
+        <p className="text-green-600 mt-2">Applied</p>
+      ) : (
+        <button
+          onClick={handleApply}
+          className="mt-2 px-4 py-1 bg-blue-600 text-white rounded"
+        >
+          Apply
+        </button>
+      )}
+      {error && <p className="text-red-600">{error}</p>}
+    </div>
   );
 }

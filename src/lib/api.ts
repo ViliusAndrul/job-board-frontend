@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api', // Your backend
+  baseURL: 'http://localhost:5000/api',
 });
 
 export const register = async (username: string,email: string, password: string, role: string) => {
@@ -15,4 +15,15 @@ export const login = async (email: string, password: string) => {
   return res.data;
 };
 
-// Add more later (register, fetch jobs, etc.)
+API.interceptors.request.use((config) => {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+export async function applyToJob(jobId: number) {
+  const response = await axios.post('/api/applications', {
+    job_id: jobId
+  });
+  return response.data;
+}
