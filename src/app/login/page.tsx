@@ -19,7 +19,7 @@ export default function LoginPage(): JSX.Element {
         if (user) {
           router.push('/dashboard');
         }
-      }, []);
+      }, [router, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
