@@ -9,6 +9,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const { logout } = useAuth();
 
+
   useEffect(() => {
     if (!user) {
       router.push('/login');
@@ -25,7 +26,7 @@ export default function DashboardPage() {
 >
   Log Out
 </button>
-      <h1 className="text-2xl font-bold">Welcome, {user.email}</h1>
+      <h1 className="text-2xl font-bold">Welcome, {user.id}</h1>
       <p>Your role: {user.role}</p>
     </div>
   );
