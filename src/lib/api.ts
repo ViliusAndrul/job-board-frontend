@@ -22,8 +22,21 @@ API.interceptors.request.use((config) => {
 });
 
 export async function applyToJob(jobId: number) {
-  const response = await axios.post('/api/applications', {
+  const response = await API.post('/applications', {
     job_id: jobId
   });
   return response.data;
 }
+
+export const fetchEmployerApplications = async () => {
+  try {
+    const res = await API.get('/applications/employer');
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Failed to fetch employer applications:', error.response?.data);
+      throw new Error(error.response?.data?.message || 'Failed to fetch applications');
+    }
+    throw error;
+  }
+};
