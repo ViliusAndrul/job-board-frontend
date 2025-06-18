@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import { postJob } from '@/lib/api';
 
 export default function JobForm() {
   const [title, setTitle] = useState('');
@@ -9,22 +11,14 @@ export default function JobForm() {
   const [location, setLocation] = useState('');
   const [salary, setSalary] = useState('');
   const [message, setMessage] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      await axios.post('/api/jobs', {
-        title,
-        description,
-        location,
-        salary,
-      });
-      setMessage('Job created successfully!');
-      setTitle('');
-      setDescription('');
-      setLocation('');
-      setSalary('');
+      await postJob({ title, description, location, salary });
+      router.push('/dashboard/employer');
     } catch (err) {
     if (axios.isAxiosError(err)) {
       setMessage(err.response?.data?.message || 'Failed to create job');

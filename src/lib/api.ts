@@ -34,3 +34,13 @@ export const fetchEmployerApplications = async () => {
     return res.data;
    
 };
+
+export const postJob = async (jobData: {
+  title: string;
+  description: string;
+  location: string;
+  salary: string;
+}) => {
+  const res = await API.post('/jobs', jobData);
+  return res.data;
+};

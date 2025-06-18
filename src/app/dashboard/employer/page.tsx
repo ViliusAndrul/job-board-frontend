@@ -7,18 +7,24 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 type Application = {
-  id: number;
   job_id: number;
-  user_id: number;
-  resume_url: string | null;
-  username: string;
   title: string;
+  id: number | null;
+  user_id: number | null;
+  username: string | null;
+  resume_url: string;
 };
 
 type JobGroup = {
   title: string;
-  applicants: Application[];
-}
+  applicants: {
+    id: number;
+    user_id: number;
+    username: string;
+    resume_url: string;
+  }[];
+};
+
 
 export default function EmployerDashboard() {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -49,20 +55,33 @@ export default function EmployerDashboard() {
     loadData();
   }, [router, user]);
 
-  const jobsById = applications.reduce((acc: { [key: number]: { title: string; applicants: Application[] } }, app: Application) => {
-  if (!acc[app.job_id]) {
-    acc[app.job_id] = { title: app.title, applicants: [] };
+  const jobsById = applications.reduce((acc: { [key: number]: JobGroup }, row: Application) => {
+  if (!acc[row.job_id]) {
+    acc[row.job_id] = {
+      title: row.title,
+      applicants: [],
+    };
   }
-  acc[app.job_id].applicants.push(app);
+
+  if (row.id && row.user_id && row.username && row.resume_url !== undefined) {
+    acc[row.job_id].applicants.push({
+      id: row.id,
+      user_id: row.user_id,
+      username: row.username,
+      resume_url: row.resume_url,
+    });
+  }
+
   return acc;
 }, {});
+
 
   return (
     <div className="p-4 space-y-6">
     <h1 className="text-2xl font-bold">Employer Dashboard</h1>
 
       <Link
-        href="/employer/create-job"
+        href="/dashboard/employer/create-job"
         className="inline-block bg-blue-600 text-white px-4 py-2 rounded"
       >
         + Post New Job
@@ -73,21 +92,21 @@ export default function EmployerDashboard() {
       <h2 className="text-2xl font-semibold mb-4">Your Job Applications</h2>
       {error && <p className="text-red-500">{error}</p>}
       {Object.entries(jobsById).map(([jobId, jobData]: [string, JobGroup]) => (
-        <div key={jobId} className="border rounded p-4 shadow">
-          <h3 className="text-xl font-bold">{jobData.title}</h3>
-          {jobData.applicants.length === 0 ? (
-            <p className="text-gray-600">No applicants yet.</p>
-          ) : (
-            <ul className="mt-2 space-y-2">
-              {jobData.applicants.map((app: Application) => (
-                <li key={app.id} className="border-b pb-2">
-                  <p><strong>{app.username}</strong></p>
-                  {app.resume_url ? (
-                    <a href={app.resume_url} className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
-                      View Resume
-                    </a>
-                  ) : (
-                    <p className="text-gray-500">No resume provided</p>
+  <div key={jobId} className="border rounded p-4 shadow">
+    <h3 className="text-xl font-bold">{jobData.title}</h3>
+    {jobData.applicants.length === 0 ? (
+      <p className="text-gray-600 mt-2">No applicants yet.</p>
+    ) : (
+      <ul className="mt-2 space-y-2">
+        {jobData.applicants.map((app) => (
+          <li key={app.id} className="border-b pb-2">
+            <p><strong>{app.username}</strong></p>
+            {app.resume_url ? (
+              <a href={app.resume_url} className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
+                View Resume
+              </a>
+            ) : (
+              <p className="text-gray-500">No resume provided</p>
                   )}
                 </li>
               ))}
