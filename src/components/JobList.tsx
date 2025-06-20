@@ -8,6 +8,7 @@ type Job = {
   title: string;
   description: string;
   location: string;
+  applied: boolean;
 };
 
 type Props = {

@@ -91,6 +91,15 @@ export default function RegisterPage() {
         <button type="submit" className="w-full p-2 bg-blue-600 text-white rounded">
           Register
         </button>
+        <p className="mt-4 text-sm text-center">
+        Already have an account?{' '}
+        <a
+          href="/login"
+          className="text-blue-600 hover:underline"
+        >
+          Login here
+        </a>
+      </p>
       </form>
     </div>
   );

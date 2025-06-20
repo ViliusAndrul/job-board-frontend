@@ -59,6 +59,15 @@ export default function LoginPage(): JSX.Element {
         <button type="submit" className="w-full p-2 bg-blue-600 text-white rounded">
           Log In
         </button>
+        <p className="mt-4 text-sm text-center">
+          Don&#39;t have an account?{' '}
+          <a
+            href="/register"
+            className="text-blue-600 hover:underline"
+          >
+            Register here
+          </a>
+        </p>
       </form>
     </div>
   );

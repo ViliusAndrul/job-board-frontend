@@ -11,6 +11,7 @@ type Job = {
   title: string;
   description: string;
   location: string;
+  applied: boolean;
 };
 
 export default function JobSeekerDashboard() {
@@ -25,11 +26,12 @@ export default function JobSeekerDashboard() {
     }
 
     if (user.role !== 'job_seeker') {
-      router.push('/dashboard'); // fallback
+      router.push('/dashboard');
       return;
     }
 
-    axios.get('http://localhost:5000/api/jobs')
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:5000/api/jobs', { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => setJobs(res.data))
       .catch((err) => console.error(err));
   }, [router, user]);
@@ -43,11 +45,15 @@ export default function JobSeekerDashboard() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert('Application submitted!');
-    } catch (err) {
-      console.error(err);
-      alert('Failed to apply.');
-    }
-  };
+    const res = await axios.get('http://localhost:5000/api/jobs', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setJobs(res.data);
+  } catch (err) {
+    console.error(err);
+    alert('Failed to apply.');
+  }
+};
 
   return (
     <div className="max-w-xl mx-auto mt-20 space-y-4">

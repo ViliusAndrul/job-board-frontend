@@ -8,6 +8,7 @@ type Job = {
   title: string;
   description: string;
   location: string;
+  applied: boolean;
 };
 
 export default function JobCard({
@@ -17,13 +18,11 @@ export default function JobCard({
   job: Job;
   onApply: (jobId: number) => void;
 }) {
-  const [applied, setApplied] = useState(false);
   const [error, setError] = useState('');
 
   const handleApply = async () => {
     try {
       await onApply(job.id);
-      setApplied(true);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.error || 'Failed to apply');
@@ -37,8 +36,8 @@ export default function JobCard({
     <div className="border rounded p-4 shadow">
       <h3 className="text-lg font-semibold">{job.title}</h3>
       <p className="text-sm text-gray-600">{job.description}</p>
-      {applied ? (
-        <p className="text-green-600 mt-2">Applied</p>
+      {job.applied ? (
+      <p className="text-green-600 mt-2">Applied</p>
       ) : (
         <button
           onClick={handleApply}
@@ -46,7 +45,7 @@ export default function JobCard({
         >
           Apply
         </button>
-      )}
+        )}
       {error && <p className="text-red-600">{error}</p>}
     </div>
   );
