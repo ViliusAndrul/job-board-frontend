@@ -1,37 +1,60 @@
 'use client';
 
-import React, { useState } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import { postJob } from '@/lib/api';
+import React, { useState, useEffect } from 'react';
 
-export default function JobForm() {
+export type JobData = {
+  title: string;
+  description: string;
+  location: string;
+  salary: string;
+};
+
+type JobFormProps = {
+  initialValues?: JobData;
+  onSubmit: (data: JobData) => Promise<void>;
+  buttonLabel?: string;
+};
+
+export default function JobForm({
+  initialValues,
+  onSubmit,
+  buttonLabel = 'Submit',
+}: JobFormProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [salary, setSalary] = useState('');
   const [message, setMessage] = useState('');
-  const router = useRouter();
+
+  useEffect(() => {
+    if (initialValues) {
+      setTitle(initialValues.title);
+      setDescription(initialValues.description);
+      setLocation(initialValues.location);
+      setSalary(initialValues.salary);
+    }
+  }, [initialValues]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
-      await postJob({ title, description, location, salary });
-      router.push('/dashboard/employer');
-    } catch (err) {
-    if (axios.isAxiosError(err)) {
-      setMessage(err.response?.data?.message || 'Failed to create job');
-    } else {
-      setMessage('An unexpected error occurred');
-    }
+      await onSubmit({ title, description, location, salary });
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setMessage(err.response?.data?.message || 'Submission failed');
+      } else if (err instanceof Error) {
+        setMessage(err.message);
+      } else {
+        setMessage('An unknown error occurred');
+      }
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto">
-      <h2 className="text-xl font-semibold">Post a New Job</h2>
-      {message && <p className="text-sm text-blue-600">{message}</p>}
+      <h2 className="text-xl font-semibold">{buttonLabel === 'Update Job' ? 'Edit Job' : 'Post a New Job'}</h2>
+      {message && <p className="text-sm text-red-600">{message}</p>}
       <input
         type="text"
         placeholder="Job title"
@@ -63,11 +86,8 @@ export default function JobForm() {
         className="w-full border px-3 py-2 rounded"
         required
       />
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Post Job
+      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+        {buttonLabel}
       </button>
     </form>
   );

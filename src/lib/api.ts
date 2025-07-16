@@ -44,3 +44,22 @@ export const postJob = async (jobData: {
   const res = await API.post('/jobs', jobData);
   return res.data;
 };
+
+export const updateJob = async (
+  id: string | number,
+  data: { title: string; description: string; location: string; salary: string }
+) => {
+  const token = localStorage.getItem('token');
+  const res = await API.put(`/jobs/${id}`, data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
+export const fetchJobById = async (id: string | number) => {
+  const token = localStorage.getItem('token');
+  const res = await API.get(`/jobs/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};

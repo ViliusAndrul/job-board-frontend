@@ -92,8 +92,16 @@ export default function EmployerDashboard() {
       <h2 className="text-2xl font-semibold mb-4">Your Job Applications</h2>
       {error && <p className="text-red-500">{error}</p>}
       {Object.entries(jobsById).map(([jobId, jobData]: [string, JobGroup]) => (
-  <div key={jobId} className="border rounded p-4 shadow">
-    <h3 className="text-xl font-bold">{jobData.title}</h3>
+  <div key={jobId} className="border rounded p-4 shadow mb-4">
+    <div className="flex justify-between items-center">
+      <h3 className="text-xl font-bold">{jobData.title}</h3>
+      <Link
+        href={`/dashboard/employer/edit-job/${jobId}`}
+        className="text-sm bg-yellow-400 text-black px-3 py-1 rounded hover:bg-yellow-500"
+      >
+        Edit
+      </Link>
+    </div>
     {jobData.applicants.length === 0 ? (
       <p className="text-gray-600 mt-2">No applicants yet.</p>
     ) : (
