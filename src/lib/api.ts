@@ -63,3 +63,7 @@ export const fetchJobById = async (id: string | number) => {
   });
   return res.data;
 };
+
+export async function deleteJob(id: string): Promise<void> {
+  await API.delete(`/jobs/${id}`);
+}

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchEmployerApplications } from '@/lib/api';
 import { useAuth } from '@/context/authContext';
 import { useRouter } from 'next/navigation';
+import { deleteJob } from '@/lib/api';
 import Link from 'next/link';
 
 type Application = {
@@ -75,6 +76,18 @@ export default function EmployerDashboard() {
   return acc;
 }, {});
 
+const handleDelete = async (id: number) => {
+  if (confirm('Are you sure you want to delete this job?')) {
+    try {
+      await deleteJob(id.toString());
+      setApplications((prev) => prev.filter(app => app.job_id !== id));
+    } catch (err) {
+      alert('Failed to delete job');
+      console.error(err);
+    }
+  }
+};
+
 
   return (
     <div className="p-4 space-y-6">
@@ -93,15 +106,21 @@ export default function EmployerDashboard() {
       {error && <p className="text-red-500">{error}</p>}
       {Object.entries(jobsById).map(([jobId, jobData]: [string, JobGroup]) => (
   <div key={jobId} className="border rounded p-4 shadow mb-4">
-    <div className="flex justify-between items-center">
+    <div className="flex gap-2 mt-2">
       <h3 className="text-xl font-bold">{jobData.title}</h3>
-      <Link
-        href={`/dashboard/employer/edit-job/${jobId}`}
-        className="text-sm bg-yellow-400 text-black px-3 py-1 rounded hover:bg-yellow-500"
-      >
-        Edit
-      </Link>
-    </div>
+  <Link
+    href={`/dashboard/employer/edit-job/${jobId}`}
+    className="p-2 bg-blue-500 text-white rounded"
+  >
+    Edit
+  </Link>
+  <button
+    onClick={() => handleDelete(Number(jobId))}
+    className="p-2 bg-red-500 text-white rounded"
+  >
+    Delete
+  </button>
+</div>
     {jobData.applicants.length === 0 ? (
       <p className="text-gray-600 mt-2">No applicants yet.</p>
     ) : (
@@ -110,7 +129,7 @@ export default function EmployerDashboard() {
           <li key={app.id} className="border-b pb-2">
             <p><strong>{app.username}</strong></p>
             {app.resume_url ? (
-              <a href={app.resume_url} className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
+              <a href={app.resume_url} className="p-2 bg-green-500 text-white rounded" target="_blank" rel="noopener noreferrer">
                 View Resume
               </a>
             ) : (
@@ -125,4 +144,3 @@ export default function EmployerDashboard() {
     </div>
   );
 }
-
