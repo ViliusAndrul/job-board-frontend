@@ -1,7 +1,6 @@
 'use client';
-
-import React, { useState } from 'react';
-import axios from 'axios';
+import React from 'react';
+import Link from 'next/link';
 
 type Job = {
   id: number;
@@ -11,42 +10,22 @@ type Job = {
   applied: boolean;
 };
 
-export default function JobCard({
-  job,
-  onApply,
-}: {
-  job: Job;
-  onApply: (jobId: number) => void;
-}) {
-  const [error, setError] = useState('');
-
-  const handleApply = async () => {
-    try {
-      await onApply(job.id);
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.error || 'Failed to apply');
-      } else {
-        setError('Unexpected error');
-      }
-    }
-  };
-
+export default function JobCard({ job }: { job: Job }) {
   return (
     <div className="border rounded p-4 shadow">
       <h3 className="text-lg font-semibold">{job.title}</h3>
       <p className="text-sm text-gray-600">{job.description}</p>
+      
       {job.applied ? (
-      <p className="text-green-600 mt-2">Applied</p>
+        <p className="text-green-600 mt-2">Applied</p>
       ) : (
-        <button
-          onClick={handleApply}
-          className="mt-2 px-4 py-1 bg-blue-600 text-white rounded"
+        <Link
+          href={`job-seeker/apply/${job.id}`}
+          className="inline-block mt-2 px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
         >
           Apply
-        </button>
-        )}
-      {error && <p className="text-red-600">{error}</p>}
+        </Link>
+      )}
     </div>
   );
 }

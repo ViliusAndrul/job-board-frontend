@@ -1,5 +1,4 @@
 'use client';
-
 import React from 'react';
 import JobCard from './JobCard';
 
@@ -13,16 +12,15 @@ type Job = {
 
 type Props = {
   jobs: Job[];
-  onApply: (jobId: number) => void;
 };
 
-export default function JobList({ jobs, onApply }: Props) {
+export default function JobList({ jobs }: Props) {
   if (jobs.length === 0) return <p>No jobs found.</p>;
 
   return (
     <ul className="space-y-4">
       {jobs.map((job) => (
-        <JobCard key={job.id} job={job} onApply={onApply} />
+        <JobCard key={job.id} job={job} />
       ))}
     </ul>
   );

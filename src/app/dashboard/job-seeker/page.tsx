@@ -31,29 +31,13 @@ export default function JobSeekerDashboard() {
     }
 
     const token = localStorage.getItem('token');
-    axios.get('http://localhost:5000/api/jobs', { headers: { Authorization: `Bearer ${token}` } })
+    axios
+      .get('http://localhost:5000/api/jobs', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => setJobs(res.data))
       .catch((err) => console.error(err));
   }, [router, user]);
-
-  const handleApply = async (jobId: number) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        `http://localhost:5000/api/applications`,
-        { job_id: jobId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert('Application submitted!');
-    const res = await axios.get('http://localhost:5000/api/jobs', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setJobs(res.data);
-  } catch (err) {
-    console.error(err);
-    alert('Failed to apply.');
-  }
-};
 
   return (
     <div className="max-w-xl mx-auto mt-20 space-y-4">
@@ -61,7 +45,7 @@ export default function JobSeekerDashboard() {
         Log Out
       </button>
       <h1 className="text-2xl font-bold mb-4">Job Seeker Dashboard</h1>
-      <JobList jobs={jobs} onApply={handleApply} />
+      <JobList jobs={jobs}/>
     </div>
   );
 }
