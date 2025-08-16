@@ -93,59 +93,85 @@ const handleDelete = async (id: number) => {
 
 
   return (
-    <div className="p-4 space-y-6">
-    <h1 className="text-2xl font-bold">Employer Dashboard</h1>
+  <div className="p-6 space-y-8 bg-gray-900 min-h-screen text-gray-100">
+    <div className="flex justify-between items-center">
+      <h1 className="text-3xl font-bold">Employer Dashboard</h1>
+      <button
+        onClick={logout}
+        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
+      >
+        Log Out
+      </button>
+    </div>
 
+    <div className="flex gap-4">
       <Link
         href="/dashboard/employer/create-job"
-        className="inline-block bg-blue-600 text-white px-4 py-2 rounded"
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow"
       >
         + Post New Job
       </Link>
-        <button onClick={logout} className="p-2 bg-red-500 text-white rounded">
-        Log Out
-      </button>
-      <h2 className="text-2xl font-semibold mb-4">Your Job Applications</h2>
-      {error && <p className="text-red-500">{error}</p>}
-      {Object.entries(jobsById).map(([jobId, jobData]: [string, JobGroup]) => (
-  <div key={jobId} className="border rounded p-4 shadow mb-4">
-    <div className="flex gap-2 mt-2">
-      <h3 className="text-xl font-bold">{jobData.title}</h3>
-  <Link
-    href={`/dashboard/employer/edit-job/${jobId}`}
-    className="p-2 bg-blue-500 text-white rounded"
-  >
-    Edit
-  </Link>
-  <button
-    onClick={() => handleDelete(Number(jobId))}
-    className="p-2 bg-red-500 text-white rounded"
-  >
-    Delete
-  </button>
-</div>
-    {jobData.applicants.length === 0 ? (
-      <p className="text-gray-600 mt-2">No applicants yet.</p>
-    ) : (
-      <ul className="mt-2 space-y-2">
-        {jobData.applicants.map((app) => (
-          <li key={app.id} className="border-b pb-2">
-            <p><strong>{app.username}</strong></p>
-            <p><strong>Cover Letter:</strong></p>
-    <p className="whitespace-pre-line">{app.cover_letter}</p>
-            {app.resume_url ? (
-              <a href={app.resume_url} className="p-2 bg-green-500 text-white rounded" target="_blank" rel="noopener noreferrer">
-                View Resume
-              </a>
-            ) : (
-              <p className="text-gray-500">No resume provided</p>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      ))}
     </div>
-  );
+
+    <h2 className="text-2xl font-semibold">Your Job Applications</h2>
+    {error && <p className="text-red-400">{error}</p>}
+
+    {Object.entries(jobsById).map(([jobId, jobData]: [string, JobGroup]) => (
+      <div key={jobId} className="border border-gray-700 rounded-lg p-6 shadow-md bg-gray-800 space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-xl font-bold text-white">{jobData.title}</h3>
+          <div className="flex gap-2">
+            <Link
+              href={`/dashboard/employer/edit-job/${jobId}`}
+              className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
+            >
+              Edit
+            </Link>
+            <button
+              onClick={() => handleDelete(Number(jobId))}
+              className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-md"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+
+        {jobData.applicants.length === 0 ? (
+          <p className="text-gray-400 italic">No applicants yet.</p>
+        ) : (
+          <ul className="space-y-4">
+            {jobData.applicants.map((app) => (
+              <li
+                key={app.id}
+                className="p-4 border border-gray-700 rounded-lg shadow-sm bg-gray-700 space-y-3"
+              >
+                <p className="font-semibold text-lg text-white">{app.username}</p>
+
+                <div>
+                  <p className="text-sm font-medium text-gray-300">Cover Letter:</p>
+                  <div className="p-3 bg-gray-800 border border-gray-600 rounded-md max-h-40 overflow-y-auto whitespace-pre-line text-gray-100 text-sm">
+                    {app.cover_letter || <span className="text-gray-400">No cover letter provided</span>}
+                  </div>
+                </div>
+
+                {app.resume_url ? (
+                  <a
+                    href={app.resume_url}
+                    className="inline-block mt-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Resume
+                  </a>
+                ) : (
+                  <p className="text-gray-400 text-sm">No resume provided</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    ))}
+  </div>
+);
 }
