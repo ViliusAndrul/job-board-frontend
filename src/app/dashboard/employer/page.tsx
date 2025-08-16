@@ -14,6 +14,7 @@ type Application = {
   user_id: number | null;
   username: string | null;
   resume_url: string;
+  cover_letter: string;
 };
 
 type JobGroup = {
@@ -23,6 +24,7 @@ type JobGroup = {
     user_id: number;
     username: string;
     resume_url: string;
+    cover_letter: string;
   }[];
 };
 
@@ -70,6 +72,7 @@ export default function EmployerDashboard() {
       user_id: row.user_id,
       username: row.username,
       resume_url: row.resume_url,
+      cover_letter: row.cover_letter,
     });
   }
 
@@ -128,6 +131,8 @@ const handleDelete = async (id: number) => {
         {jobData.applicants.map((app) => (
           <li key={app.id} className="border-b pb-2">
             <p><strong>{app.username}</strong></p>
+            <p><strong>Cover Letter:</strong></p>
+    <p className="whitespace-pre-line">{app.cover_letter}</p>
             {app.resume_url ? (
               <a href={app.resume_url} className="p-2 bg-green-500 text-white rounded" target="_blank" rel="noopener noreferrer">
                 View Resume
