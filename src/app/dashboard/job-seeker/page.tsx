@@ -11,6 +11,7 @@ type Job = {
   title: string;
   description: string;
   location: string;
+  salary: number;
   applied: boolean;
 };
 
